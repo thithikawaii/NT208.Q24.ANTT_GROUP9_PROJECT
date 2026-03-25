@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 6</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8fafc;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 50%;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 24px rgba(129, 69, 69, 0.641);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, select, textarea{
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 8px;
+            border: 1px solid lightblue;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            margin-top: 20px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>FORM XỬ LÝ KHIẾU NẠI</h1>
+        <form id="complainform">
+            <label for="name">Họ và tên:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="sdt">Số điện thoại:</label>
+            <input type="tel" id="sdt" name="sdt" required>
+
+            <label for="problemtype">Loại khiếu nại:</label>
+            <select id="type" name="type" required>
+                <option value="">--Chọn loại khiếu nại--</option>
+                <option value="sản phẩm">Sản phẩm</option>
+                <option value="dịch vụ">Dịch vụ</option>
+                <option value="giao hàng">Giao hàng</option>
+                <option value="khác">Khác</option>
+            </select>
+            <label for="description">Mô tả chi tiết:</label>
+            <textarea id="description" name="description" placeholder="Mô tả khiếu nại..." required></textarea>
+
+            <label for="attachment">Đính kèm tệp (jpg, png, pdf - tối đa 5MB):</label>
+            <input type="file" id="attachment" name="attachment" accept=".jpg,.jpeg,.png,.pdf" required>
+            <div id="fileInfo" class="file-info">Chưa chọn tệp nào.</div>
+
+            <div id="errorMessage" class="error"></div> 
+
+            <button type="submit">Gửi khiếu nại</button>
+
+            
+        </form>
+    </div>
+</body>
+</html>
