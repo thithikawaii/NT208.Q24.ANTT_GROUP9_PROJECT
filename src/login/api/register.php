@@ -1,51 +1,43 @@
 <?php
-include "config.php";
+require_once 'config.php';
 
-$data = json_decode(file_get_contents("php://input"), true);
+$username = trim($_POST['username'] ?? '');
+$password = $_POST['password'] ?? '';
 
-$username = isset($data["username"]) ? trim($data["username"]) : "";
-$email = isset($data["email"]) ? trim($data["email"]) : "";
-$password = isset($data["password"]) ? trim($data["password"]) : "";
-$confirmPassword = isset($data["confirmPassword"]) ? trim($data["confirmPassword"]) : "";
-
-if ($username == "" || $email == "" || $password == "" || $confirmPassword == "") {
-    echo json_encode([
-        "success" => false,
-        "message" => "Vui lòng nhập đầy đủ thông tin"
-    ]);
-    exit();
+# Kiểm tra dữ liệu đầu vào
+if ($username === '' || $password === '') {
+    http_response_code(400);
+    echo "Username và password không được để trống";
+    exit;
 }
 
-if ($password != $confirmPassword) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Mật khẩu nhập lại không khớp"
-    ]);
-    exit();
+
+$checkStmt = mysqli_prepare($conn, "SELECT id FROM users WHERE username = ?");
+mysqli_stmt_bind_param($checkStmt, "s", $username);
+mysqli_stmt_execute($checkStmt);
+$checkResult = mysqli_stmt_get_result($checkStmt);
+
+# Kiểm tra nếu username đã tồn tại
+if (mysqli_fetch_assoc($checkResult)) {
+    http_response_code(409);
+    echo "Username đã tồn tại";
+    mysqli_stmt_close($checkStmt);
+    exit;
 }
+mysqli_stmt_close($checkStmt);
 
-$check = "SELECT * FROM users WHERE username = '$username' OR email = '$email'";
-$result = mysqli_query($conn, $check);
+$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-if (mysqli_num_rows($result) > 0) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Tên đăng nhập hoặc email đã tồn tại"
-    ]);
-    exit();
-}
+$insertStmt = mysqli_prepare($conn, "INSERT INTO users (username, password) VALUES (?, ?)");
+mysqli_stmt_bind_param($insertStmt, "ss", $username, $hashedPassword);
 
-$sql = "INSERT INTO users(username, email, password) VALUES ('$username', '$email', '$password')";
-
-if (mysqli_query($conn, $sql)) {
-    echo json_encode([
-        "success" => true,
-        "message" => "Đăng ký thành công"
-    ]);
+if (mysqli_stmt_execute($insertStmt)) {
+    echo "Đăng ký thành công";
 } else {
-    echo json_encode([
-        "success" => false,
-        "message" => "Đăng ký thất bại"
-    ]);
+    http_response_code(500);
+    echo "Lỗi hệ thống";
 }
+
+mysqli_stmt_close($insertStmt);
+mysqli_close($conn);
 ?>

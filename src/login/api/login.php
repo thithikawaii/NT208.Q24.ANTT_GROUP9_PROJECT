@@ -1,47 +1,35 @@
 <?php
-header("Content-Type: application/json; charset=UTF-8");
-include "config.php";
+require_once 'config.php'; 
 
-$data = json_decode(file_get_contents("php://input"), true);
+$username = trim($_POST['username'] ?? ''); // Lấy username từ request, loại bỏ khoảng trắng
+$password = $_POST['password'] ?? ''; // Lấy password từ request, nếu không tồn tại thì gán giá trị rỗng
 
-$username = isset($data["username"]) ? trim($data["username"]) : "";
-$password = isset($data["password"]) ? trim($data["password"]) : "";
-
-if ($username == "" || $password == "") {
-    echo json_encode([
-        "success" => false,
-        "message" => "Vui lòng nhập đầy đủ thông tin"
-    ]);
-    exit();
+// Kiểm tra nếu username hoặc password bị bỏ trống, trả về lỗi 400 Bad Request
+if ($username === '' || $password === '') {
+    http_response_code(400);
+    echo "Username và password không được để trống";
+    exit;
 }
 
-$sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
-$result = mysqli_query($conn, $sql);
+// Chuẩn bị câu truy vấn để lấy thông tin người dùng dựa trên username
+$stmt = mysqli_prepare($conn, "SELECT id, username, password FROM users WHERE username = ?");
+mysqli_stmt_bind_param($stmt, "s", $username); // Liên kết tham số username vào câu truy vấn
+mysqli_stmt_execute($stmt); // Thực thi câu truy vấn
+$result = mysqli_stmt_get_result($stmt); // Lấy kết quả trả về từ câu truy vấn
 
-if (!$result) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Lỗi truy vấn: " . mysqli_error($conn)
-    ]);
-    exit();
-}
-
-if (mysqli_num_rows($result) > 0) {
-    $user = mysqli_fetch_assoc($result);
-
-    echo json_encode([
-        "success" => true,
-        "message" => "Đăng nhập thành công",
-        "user" => [
-            "id" => $user["id"],
-            "username" => $user["username"],
-            "email" => $user["email"]
-        ]
-    ]);
+//Logic kiểm tra nếu tìm thấy người dùng và mật khẩu khớp, trả về thành công, ngược lại trả về lỗi 401 Unauthorized
+if ($user = mysqli_fetch_assoc($result)) { 
+    if (password_verify($password, $user['password'])) {
+        echo "Đăng nhập thành công";
+    } else {
+        http_response_code(401);
+        echo "Sai tài khoản hoặc mật khẩu";
+    }
 } else {
-    echo json_encode([
-        "success" => false,
-        "message" => "Sai tên đăng nhập hoặc mật khẩu"
-    ]);
+    http_response_code(401);
+    echo "Sai tài khoản hoặc mật khẩu";
 }
+
+mysqli_stmt_close($stmt);
+mysqli_close($conn);
 ?>
