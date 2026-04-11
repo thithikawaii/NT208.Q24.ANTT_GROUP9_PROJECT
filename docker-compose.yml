@@ -9,7 +9,7 @@ services:
     environment:
       - DB_HOST=db         
       - DB_USER=root       
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PASS=${DB_PASS}
       - DB_NAME=login_api_demo
     depends_on:
       - db                 
@@ -20,7 +20,7 @@ services:
     image: mysql:latest    
     container_name: building-app-db
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
       - MYSQL_DATABASE=login_api_demo                  
     volumes:
       - db-data:/var/lib/mysql 
