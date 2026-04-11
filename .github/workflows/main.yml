@@ -1,0 +1,49 @@
+name: CI/CD for pipeline
+
+on:
+  push:
+    branches: ["develop"]
+  pull_request:
+    branches: ["develop"] 
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 
+        with:
+          fetch-depth: 0
+      - name: Run Security Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: security-scan
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 
+      - name: Run Unit Tests
+        run: echo "Thêm lệnh chạy unit tests vào đây"
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/complain-app:latest
+            ${{ secrets.DOCKER_USERNAME }}/complain-app:${{ github.sha }}
