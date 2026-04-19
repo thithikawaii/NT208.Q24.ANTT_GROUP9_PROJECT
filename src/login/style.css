@@ -1,36 +1,77 @@
 body {
+    margin: 0;
     font-family: Arial, sans-serif;
-    background: #f2f2f2;
+    background: linear-gradient(180deg, #eef4ff 0%, #f8fafc 100%);
+    color: #0f172a;
+}
+
+.auth-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
 }
 
 .box {
-    width: 500px;
-    margin: 100px auto;
-    background: white;
-    padding: 20px;
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    padding: 24px;
     text-align: center;
-    border-radius: 10px;
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+h1 {
+    margin: 0 0 8px;
+}
+
+.subtitle {
+    margin: 0 0 20px;
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 input {
-    width: 90%;
-    padding: 10px;
+    width: 100%;
+    padding: 12px 14px;
     margin: 8px 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 15px;
 }
 
 button {
-    width: 95%;
-    padding: 10px;
-    background: blue;
-    color: white;
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 12px;
+    background: #2563eb;
+    color: #ffffff;
     border: none;
+    border-radius: 10px;
     cursor: pointer;
+    font-weight: 600;
 }
 
-p {
-    color: red;
+button:hover {
+    background: #1d4ed8;
+}
+
+.message {
+    min-height: 20px;
+    color: #dc2626;
+    margin: 14px 0;
 }
 
 a {
+    color: #2563eb;
     text-decoration: none;
+    font-weight: 600;
+}
+
+a:hover {
+    text-decoration: underline;
 }

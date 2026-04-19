@@ -2,22 +2,26 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng ký</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dang ky</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="box">
-        <h2>Đăng ký</h2>
+    <div class="auth-shell">
+        <div class="box">
+            <h1>Dang ky</h1>
+            <p class="subtitle">Mat khau phai co it nhat 8 ky tu, chu hoa, chu thuong, so va ky tu dac biet.</p>
 
-        <input type="text" id="registerUsername" placeholder="Nhập tên đăng nhập">
-        <input type="email" id="registerEmail" placeholder="Nhập email">
-        <input type="password" id="registerPassword" placeholder="Nhập mật khẩu">
-        <input type="password" id="registerConfirmPassword" placeholder="Nhập lại mật khẩu">
-    
-        <button onclick="register()">Đăng ký</button>
+            <input type="text" id="registerUsername" placeholder="Nhap ten dang nhap">
+            <input type="email" id="registerEmail" placeholder="Nhap email">
+            <input type="password" id="registerPassword" placeholder="Nhap mat khau">
+            <input type="password" id="registerConfirmPassword" placeholder="Nhap lai mat khau">
 
-        <p id="registerMessage"></p>
-        <a href="index.html">Đã có tài khoản? Đăng nhập</a>
+            <button type="button" onclick="register()">Dang ky</button>
+
+            <p id="registerMessage" class="message"></p>
+            <a href="index.html">Da co tai khoan? Dang nhap</a>
+        </div>
     </div>
 
     <script src="app.js"></script>
