@@ -37,10 +37,9 @@ $userFromDB = mysqli_fetch_assoc($result);
 
 require_once 'AuthService.php';           
 $auth = new AuthService();
-$loginResult = $auth->verify($password, $userFromDB); 
-
-if (!$loginResult['success']) http_response_code(401);
-echo json_encode($loginResult);
+$loginResult = $auth->verify($username, $password, $userFromDB);
+http_response_code($loginResult['status']);
+echo json_encode($loginResult['data']);
 mysqli_stmt_close($stmt);
 mysqli_close($conn);
 ?>
