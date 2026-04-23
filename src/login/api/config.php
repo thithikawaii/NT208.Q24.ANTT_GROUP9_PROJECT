@@ -11,7 +11,7 @@ $dbUser = getenv('DB_USER') ?: 'root'; // Lấy DB_USER từ biến môi trườ
   Ưu tiên DB_PASS theo Docker.
   Hỗ trợ thêm DB_PASSWORD để tránh lệch tên biến môi trường.
 */
-$dbPass = "Admin@123456789";// Lấy DB_PASS từ biến môi trường
+$dbPass = getenv('DB_PASS');// Lấy DB_PASS từ biến môi trường
 
 // Nếu DB_PASS không có, thử lấy DB_PASSWORD
 if ($dbPass === false) {
