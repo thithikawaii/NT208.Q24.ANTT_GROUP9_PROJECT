@@ -1,4 +1,9 @@
 node_modules/
 .env
 *.log
+<<<<<<< HEAD
 /vendor/
+=======
+/vendor/
+.phpunit.result.cache
+>>>>>>> dafa6e6589679d24b3d7f9c83d0b7ce21adffcd6
