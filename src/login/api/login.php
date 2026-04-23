@@ -33,14 +33,14 @@ $stmt = mysqli_prepare(
 mysqli_stmt_bind_param($stmt, "s", $username);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
+$userFromDB = mysqli_fetch_assoc($result); 
 
-// Kiểm tra 
-$userFromDB = mysqli_fetch_assoc($result);
-
-require_once 'AuthService.php';
+require_once 'AuthService.php';           
 $auth = new AuthService();
+$loginResult = $auth->verify($password, $userFromDB); 
 
-$loginResult = $auth->verify($username, $password, $userFromDB);
-
-http_response_code($loginResult['status']);
-echo json_encode($loginResult['data']);
+if (!$loginResult['success']) http_response_code(401);
+echo json_encode($loginResult);
+mysqli_stmt_close($stmt);
+mysqli_close($conn);
+?>
