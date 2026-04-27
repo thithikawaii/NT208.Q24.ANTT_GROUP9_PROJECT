@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: phungngocthi/complain-app:latest 
+    image: thithikawaii/complain-app:latest 
     container_name: building-app-web
     ports:
       - "80:80"          
