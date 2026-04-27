@@ -2,15 +2,17 @@ version: '3.8'
 
 services:
   web:
-    build: ./src           
+    image: thithikawaii/complain-app:latest 
     container_name: building-app-web
     ports:
-      - "8080:80"          
+      - "80:80"          
     environment:
       - DB_HOST=db         
       - DB_USER=root       
       - DB_PASS=${DB_PASS}
       - DB_NAME=login_api_demo
+    env_file:
+      - .env
     depends_on:
       - db                 
     networks:
