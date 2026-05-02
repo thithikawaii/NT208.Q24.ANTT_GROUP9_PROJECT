@@ -1,120 +1,4 @@
-const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
 const taskStore = new Map();
-
-async function parseJsonResponse(response) {
-  let data = null;
-
-  try {
-    data = await response.json();
-  } catch (error) {
-    data = null;
-  }
-
-  if (!response.ok) {
-    const message = data?.message || `Request failed with status ${response.status}`;
-    throw new Error(message);
-  }
-
-  return data;
-}
-
-async function register() {
-  const usernameInput = document.getElementById("registerUsername");
-  const emailInput = document.getElementById("registerEmail");
-  const passwordInput = document.getElementById("registerPassword");
-  const confirmPasswordInput = document.getElementById("registerConfirmPassword");
-  const message = document.getElementById("registerMessage");
-
-  if (!usernameInput || !emailInput || !passwordInput || !confirmPasswordInput || !message) {
-    return;
-  }
-
-  const username = usernameInput.value.trim();
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
-  const confirmPassword = confirmPasswordInput.value;
-
-  if (!username || !email || !password || !confirmPassword) {
-    message.innerText = "Vui long nhap day du thong tin";
-    return;
-  }
-
-  if (!strongPasswordRegex.test(password)) {
-    message.innerText = "Mat khau phai co it nhat 8 ky tu, chu hoa, chu thuong, so va ky tu dac biet";
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    message.innerText = "Mat khau nhap lai khong khop";
-    return;
-  }
-
-  try {
-    const response = await fetch("api/register.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-        confirmPassword
-      })
-    });
-
-    const data = await parseJsonResponse(response);
-    message.innerText = data.message;
-
-    if (data.success) {
-      window.location.href = "index.html";
-    }
-  } catch (error) {
-    message.innerText = error.message || "Khong ket noi duoc API";
-  }
-}
-
-async function login() {
-  const usernameInput = document.getElementById("loginUsername");
-  const passwordInput = document.getElementById("loginPassword");
-  const message = document.getElementById("loginMessage");
-
-  if (!usernameInput || !passwordInput || !message) {
-    return;
-  }
-
-  const username = usernameInput.value.trim();
-  const password = passwordInput.value;
-
-  if (!username || !password) {
-    message.innerText = "Vui long nhap day du thong tin";
-    return;
-  }
-
-  try {
-    const response = await fetch("api/login.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username,
-        password
-      })
-    });
-
-    const data = await parseJsonResponse(response);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    window.location.href = "home.html";
-  } catch (error) {
-    message.innerText = error.message || "Khong ket noi duoc API";
-  }
-}
-
-function logout() {
-  localStorage.removeItem("user");
-  window.location.href = "index.html";
-}
 
 function getStoredUser() {
   const rawUser = localStorage.getItem("user");
@@ -135,11 +19,32 @@ function requireAuth() {
   const user = getStoredUser();
 
   if (!user) {
-    window.location.href = "index.html";
+    window.location.href = "../login/index.html";
     return null;
   }
 
   return user;
+}
+
+function logout() {
+  localStorage.removeItem("user");
+  window.location.href = "../login/index.html";
+}
+
+async function parseJsonResponse(response) {
+  let data = null;
+
+  try {
+    data = await response.json();
+  } catch (error) {
+    data = null;
+  }
+
+  if (!response.ok) {
+    throw new Error(data?.message || `Request failed with status ${response.status}`);
+  }
+
+  return data;
 }
 
 function setTaskMessage(text, isError = true) {
@@ -182,25 +87,6 @@ function fillTaskForm(task) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function startEditTask(taskId) {
-  const task = taskStore.get(Number(taskId));
-  if (!task) {
-    setTaskMessage("Khong tim thay task can sua");
-    return;
-  }
-
-  fillTaskForm(task);
-}
-
 function renderTasks(tasks) {
   const taskList = document.getElementById("taskList");
 
@@ -236,12 +122,30 @@ function renderTasks(tasks) {
   `).join("");
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function startEditTask(taskId) {
+  const task = taskStore.get(Number(taskId));
+  if (!task) {
+    setTaskMessage("Khong tim thay task can sua");
+    return;
+  }
+
+  fillTaskForm(task);
+}
+
 async function loadTasks() {
-  const user = requireAuth();
-  if (!user) return;
+  requireAuth();
 
   try {
-    const response = await fetch("../tasks/api/list.php");
+    const response = await fetch("api/list.php");
     const data = await parseJsonResponse(response);
     renderTasks(data.data || []);
   } catch (error) {
@@ -263,7 +167,7 @@ async function createTask() {
   }
 
   try {
-    const response = await fetch("../tasks/api/create.php", {
+    const response = await fetch("api/create.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -286,8 +190,7 @@ async function createTask() {
 }
 
 async function updateTask() {
-  const user = requireAuth();
-  if (!user) return;
+  requireAuth();
 
   const id = document.getElementById("taskId")?.value.trim() || "";
   const title = document.getElementById("taskTitle")?.value.trim() || "";
@@ -305,7 +208,7 @@ async function updateTask() {
   }
 
   try {
-    const response = await fetch("../tasks/api/update.php", {
+    const response = await fetch("api/update.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -328,11 +231,10 @@ async function updateTask() {
 }
 
 async function changeTaskStatus(id, status) {
-  const user = requireAuth();
-  if (!user) return;
+  requireAuth();
 
   try {
-    const response = await fetch("../tasks/api/update-status.php", {
+    const response = await fetch("api/update-status.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -352,17 +254,13 @@ async function changeTaskStatus(id, status) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const welcomeText = document.getElementById("welcomeText");
-
-  if (!welcomeText) {
-    return;
-  }
-
   const user = requireAuth();
-  if (!user) {
-    return;
+  if (!user) return;
+
+  const welcomeText = document.getElementById("welcomeText");
+  if (welcomeText) {
+    welcomeText.innerText = `Xin chao ${user.username} (${user.email})`;
   }
 
-  welcomeText.innerText = `Xin chao ${user.username} (${user.email})`;
   loadTasks();
 });
