@@ -67,7 +67,7 @@ async function register() {
     message.innerText = data.message;
 
     if (data.success) {
-      window.location.href = "index.html";
+      window.location.href = "login.html";
     }
   } catch (error) {
     message.innerText = error.message || "Khong ket noi duoc API";
@@ -105,7 +105,7 @@ async function login() {
 
     const data = await parseJsonResponse(response);
     localStorage.setItem("user", JSON.stringify(data.user));
-    window.location.href = "home.html";
+    window.location.href = "../tasks/index.html";
   } catch (error) {
     message.innerText = error.message || "Khong ket noi duoc API";
   }
@@ -113,7 +113,7 @@ async function login() {
 
 function logout() {
   localStorage.removeItem("user");
-  window.location.href = "index.html";
+  window.location.href = "login.html";
 }
 
 function getStoredUser() {
@@ -135,7 +135,7 @@ function requireAuth() {
   const user = getStoredUser();
 
   if (!user) {
-    window.location.href = "index.html";
+    window.location.href = "login.html";
     return null;
   }
 

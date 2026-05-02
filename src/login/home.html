@@ -2,61 +2,11 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=../tasks/index.html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quan ly task</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Dang chuyen huong</title>
 </head>
 <body>
-    <main class="page">
-        <section class="hero">
-            <div>
-                <p class="eyebrow">Task Manager</p>
-                <h1>Quan ly task co ban</h1>
-                <p id="welcomeText" class="muted"></p>
-            </div>
-            <button class="secondary-button" type="button" onclick="logout()">Dang xuat</button>
-        </section>
-
-        <section class="grid">
-            <div class="panel">
-                <div class="panel-head">
-                    <h2>Form task</h2>
-                    <button class="ghost-button" type="button" onclick="resetTaskForm()">Lam moi</button>
-                </div>
-
-                <input type="hidden" id="taskId">
-
-                <label for="taskTitle">Tieu de</label>
-                <input type="text" id="taskTitle" placeholder="Nhap tieu de task">
-
-                <label for="taskDescription">Mo ta</label>
-                <textarea id="taskDescription" rows="5" placeholder="Nhap mo ta task"></textarea>
-
-                <label for="taskStatus">Trang thai</label>
-                <select id="taskStatus">
-                    <option value="todo">Todo</option>
-                    <option value="doing">Doing</option>
-                    <option value="done">Done</option>
-                </select>
-
-                <div class="actions">
-                    <button type="button" onclick="createTask()">Tao task</button>
-                    <button class="secondary-button" type="button" onclick="updateTask()">Cap nhat task</button>
-                </div>
-
-                <p id="taskMessage" class="message"></p>
-            </div>
-
-            <div class="panel">
-                <div class="panel-head">
-                    <h2>Danh sach task</h2>
-                    <button class="ghost-button" type="button" onclick="loadTasks()">Tai lai</button>
-                </div>
-                <div id="taskList" class="task-list"></div>
-            </div>
-        </section>
-    </main>
-
-    <script src="app.js"></script>
+    <p>Dang chuyen huong sang trang task...</p>
 </body>
 </html>

@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quan ly task</title>
+    <title>DevOps Task Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="page">
         <section class="hero">
             <div>
-                <p class="eyebrow">Task Manager</p>
-                <h1>Quan ly task co ban</h1>
+                <p class="eyebrow">DevOps Staging Demo</p>
+                <h1>Dashboard task cho demo pipeline va rollback</h1>
                 <p id="welcomeText" class="muted"></p>
+                <p class="muted">Trang nay co CRUD task that, khu debug secret leak va mot diem vao bi mat de gay loi HTTP 500.</p>
             </div>
-            <button class="secondary-button" type="button" onclick="logout()">Dang xuat</button>
+            <div class="hero-actions">
+                <a class="ghost-link" href="../index.html">Ve landing page</a>
+                <button class="secondary-button" type="button" onclick="logout()">Dang xuat</button>
+            </div>
         </section>
 
         <section class="grid">
@@ -53,6 +57,35 @@
                     <button class="ghost-button" type="button" onclick="loadTasks()">Tai lai</button>
                 </div>
                 <div id="taskList" class="task-list"></div>
+            </div>
+        </section>
+
+        <section class="insight-grid">
+            <div class="panel">
+                <div class="panel-head">
+                    <h2>Debug secret leak</h2>
+                    <button class="ghost-button" type="button" onclick="loadDebugInfo()">Tai thong tin</button>
+                </div>
+                <p class="muted">API nay co chu dich tra ve thong tin DB de demo secret scan va sai khac giua local, staging, EC2.</p>
+                <div id="debugInfo" class="debug-card">
+                    <p>Chua tai thong tin runtime.</p>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h2>Rollback trigger</h2>
+                    <button id="secretTriggerButton" class="danger-button hidden-trigger" type="button" onclick="triggerRollbackDemo()">Secret trigger</button>
+                </div>
+                <p class="muted">
+                    Nut bi an nay duoc dung de tao loi co chu dich. Co the mo no bang cach click 5 lan vao tieu de trang
+                    hoac bam phim <strong>Shift + R</strong>.
+                </p>
+                <div class="status-card">
+                    <p><strong>Duong dan loi:</strong> <code>tasks/api/trigger-failure.php</code></p>
+                    <p><strong>Hanh vi:</strong> goi truy van vao bang khong ton tai va tra ve <code>HTTP 500</code>.</p>
+                    <p id="rollbackMessage" class="message"></p>
+                </div>
             </div>
         </section>
     </main>
