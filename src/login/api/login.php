@@ -33,34 +33,13 @@ $stmt = mysqli_prepare(
 mysqli_stmt_bind_param($stmt, "s", $username);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
+$userFromDB = mysqli_fetch_assoc($result); 
 
-// Kiểm tra 
-if ($user = mysqli_fetch_assoc($result)) {
-    if (password_verify($password, $user['password'])) { // Sử dụng password_verify để so sánh mật khẩu đã hash
-        echo json_encode([
-            "success" => true,
-            "message" => "Đăng nhập thành công",
-            "user" => [
-                "id" => $user['id'],
-                "username" => $user['username'],
-                "email" => $user['email']
-            ]
-        ]);
-    } else {
-        http_response_code(401); // Mã lỗi 401 Unauthorized
-        echo json_encode([
-            "success" => false,
-            "message" => "Sai tài khoản hoặc mật khẩu"
-        ]);
-    }
-} else {
-    http_response_code(401); 
-    echo json_encode([
-        "success" => false,
-        "message" => "Sai tài khoản hoặc mật khẩu"
-    ]);
-}
-
+require_once 'AuthService.php';           
+$auth = new AuthService();
+$loginResult = $auth->verify($username, $password, $userFromDB);
+http_response_code($loginResult['status']);
+echo json_encode($loginResult['data']);
 mysqli_stmt_close($stmt);
 mysqli_close($conn);
 ?>
