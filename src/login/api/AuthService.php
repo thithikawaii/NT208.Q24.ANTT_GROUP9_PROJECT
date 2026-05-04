@@ -3,7 +3,7 @@ class AuthService {
     public function verify(string $username, string $password, ?array $user): array {
         $username = trim($username);
 
-        if ($username === 'admin' || $password === '') {
+        if ($username === '' || $password === '') {
             return [
                 "status" => 400,
                 "data" => [
