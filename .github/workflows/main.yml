@@ -84,17 +84,28 @@ jobs:
           port: 22
           envs: DB_PASSWORD,DOCKER_USERNAME,DOCKER_PASSWORD
           script: |
-            cd /home/ubuntu/
-            # 1. Khởi tạo file .env cho code của Thư
+            cd /home/ubuntu
+            echo "1. Creating .env file with database credentials and image tag..."
             echo "DB_HOST=db" > .env
-            echo "DB_NAME=login_api_demo" >> .env
             echo "DB_USER=root" >> .env
-            echo "DB_PASS=$DB_PASSWORD" >> .env
-            # 2. Đăng nhập Docker Hub ngay trên EC2
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            
-            # 3. Pull Image mới nhất và khởi động lại
+            echo "DB_PASS=${DB_PASSWORD}" >> .env
+            echo "DB_NAME=login_api_demo" >> .env
+            echo "IMAGE_TAG=${{github.sha}}" >> .env
+            echo "DOCKER_USERNAME=${DOCKER_USERNAME}" >> .env 
+            echo "2. Logging in and pulling the latest image..."
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin 
+            docker-compose pull
+            docker-compose up -d 
+            echo "3. Running smoke tests..."
+            sleep 15
+            if curl -s -f http://localhost > /dev/null; then
+            echo "Smoke test passed!"
+            else  
+            echo "Smoke test failed!"
+            sed -i "s/IMAGE_TAG=.*/IMAGE_TAG=${{ github.event.before }}/g" .env
             docker-compose pull
             docker-compose up -d
-            # 4. Dọn dẹp Image cũ để không đầy ổ cứng 
+            echo "Rolled back to previous image."
+            exit 1
+            fi
             docker image prune -f
