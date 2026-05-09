@@ -1,6 +1,9 @@
 <?php
-class AuthService {
-    public function verify(string $username, string $password, ?array $user): array {
+
+class AuthService
+{
+    public function verify(string $username, string $password, ?array $user): array
+    {
         $username = trim($username);
 
         if ($username === '' || $password === '') {

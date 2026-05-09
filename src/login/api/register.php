@@ -1,10 +1,11 @@
 <?php
+
 require_once 'config.php';
 
 $input = json_decode(file_get_contents('php://input'), true); // Đọc dữ liệu JSON từ body của request
 
 
-// Kiểm tra nếu dữ liệu không phải là mảng 
+// Kiểm tra nếu dữ liệu không phải là mảng
 if (!is_array($input)) {
     http_response_code(400);
     echo json_encode([
@@ -15,7 +16,7 @@ if (!is_array($input)) {
 }
 
 $username = trim($input['username'] ?? ''); // Sử dụng trim để loại bỏ khoảng trắng ở đầu và cuối
-$email = trim($input['email'] ?? ''); 
+$email = trim($input['email'] ?? '');
 $password = $input['password'] ?? '';
 $confirmPassword = $input['confirmPassword'] ?? '';
 
@@ -41,7 +42,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 // Kiểm tra nếu mật khẩu và xác nhận mật khẩu không khớp
 if ($password !== $confirmPassword) {
-    http_response_code(400); 
+    http_response_code(400);
     echo json_encode([
         "success" => false,
         "message" => "Mật khẩu nhập lại không khớp"
