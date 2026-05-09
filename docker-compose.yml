@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: thithikawaii/complain-app:latest 
+    image: ${DOCKER_USERNAME}/complain-app:${IMAGE_TAG:-latest}
     container_name: building-app-web
     ports:
       - "80:80"          
