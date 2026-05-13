@@ -112,4 +112,3 @@ if (mysqli_stmt_execute($insertStmt)) {
 
 mysqli_stmt_close($insertStmt);
 mysqli_close($conn);
-?>

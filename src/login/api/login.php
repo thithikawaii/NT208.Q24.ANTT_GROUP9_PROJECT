@@ -43,4 +43,3 @@ http_response_code($loginResult['status']);
 echo json_encode($loginResult['data']);
 mysqli_stmt_close($stmt);
 mysqli_close($conn);
-?>
