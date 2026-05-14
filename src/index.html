@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevOps Demo App</title>
+    <title>DevOps Task App</title>
     <style>
         :root {
-            --bg: #f3efe6;
-            --ink: #1f2937;
-            --muted: #52606d;
-            --card: rgba(255, 255, 255, 0.88);
-            --line: rgba(31, 41, 55, 0.08);
+            --bg: #f6f7fb;
+            --ink: #111827;
+            --muted: #5b6472;
+            --panel: rgba(255, 255, 255, 0.92);
+            --line: #e4e8f0;
             --primary: #0f766e;
             --primary-dark: #115e59;
+            --accent: #2563eb;
             --danger: #b91c1c;
-            --shadow: 0 24px 60px rgba(31, 41, 55, 0.12);
+            --shadow: 0 18px 50px rgba(17, 24, 39, 0.11);
         }
 
         * {
@@ -23,82 +24,132 @@
 
         body {
             margin: 0;
+            min-height: 100vh;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             color: var(--ink);
             background:
-                radial-gradient(circle at top left, rgba(15, 118, 110, 0.18), transparent 30%),
-                radial-gradient(circle at bottom right, rgba(185, 28, 28, 0.14), transparent 28%),
-                linear-gradient(135deg, #f8f5ef 0%, #eef6f4 100%);
+                linear-gradient(120deg, rgba(15, 118, 110, 0.12), transparent 38%),
+                linear-gradient(300deg, rgba(37, 99, 235, 0.10), transparent 35%),
+                var(--bg);
+        }
+
+        a {
+            color: inherit;
         }
 
         .page {
             width: min(1120px, calc(100% - 32px));
             margin: 0 auto;
-            padding: 40px 0 56px;
+            padding: 34px 0 44px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+        }
+
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--ink);
+            color: #fff;
+        }
+
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 10px;
         }
 
         .hero {
             display: grid;
-            grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.9fr);
-            gap: 24px;
+            grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+            gap: 22px;
             align-items: stretch;
         }
 
         .panel {
-            background: var(--card);
-            backdrop-filter: blur(14px);
+            background: var(--panel);
             border: 1px solid var(--line);
-            border-radius: 28px;
+            border-radius: 18px;
             box-shadow: var(--shadow);
-            padding: 28px;
+            padding: 26px;
+        }
+
+        .hero-main {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 430px;
+            background:
+                linear-gradient(135deg, rgba(17, 24, 39, 0.92), rgba(15, 118, 110, 0.84)),
+                url("https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1400&q=80");
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            overflow: hidden;
         }
 
         .eyebrow {
             margin: 0 0 12px;
-            color: var(--primary);
+            color: #99f6e4;
             font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.12em;
+            font-weight: 800;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
         }
 
         h1 {
+            max-width: 780px;
             margin: 0;
-            font-size: clamp(34px, 5vw, 60px);
-            line-height: 1.05;
+            font-size: clamp(36px, 6vw, 64px);
+            line-height: 1.02;
         }
 
-        .lead {
-            margin: 18px 0 0;
+        h2 {
+            margin: 0 0 14px;
+            font-size: 24px;
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        p {
             color: var(--muted);
-            font-size: 17px;
-            line-height: 1.7;
+            line-height: 1.65;
         }
 
-        .cta-row,
-        .mini-grid,
-        .timeline,
-        .checklist {
-            display: grid;
-            gap: 14px;
-        }
-
-        .cta-row {
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            margin-top: 24px;
+        .hero-main p {
+            max-width: 650px;
+            color: rgba(255, 255, 255, 0.82);
         }
 
         .button {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            min-height: 48px;
-            padding: 12px 18px;
-            border-radius: 999px;
-            font-weight: 700;
+            min-height: 44px;
+            padding: 11px 16px;
+            border-radius: 12px;
+            font-weight: 800;
             text-decoration: none;
-            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
         }
 
         .button:hover {
@@ -108,34 +159,76 @@
         .button-primary {
             background: var(--primary);
             color: #fff;
-            box-shadow: 0 12px 30px rgba(15, 118, 110, 0.22);
+            box-shadow: 0 12px 24px rgba(15, 118, 110, 0.22);
         }
 
         .button-secondary {
-            color: var(--ink);
-            border: 1px solid rgba(31, 41, 55, 0.14);
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        .mini-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            margin-top: 28px;
-        }
-
-        .mini-card,
-        .stage,
-        .alert {
-            border-radius: 20px;
             border: 1px solid var(--line);
-            background: rgba(255, 255, 255, 0.78);
-            padding: 18px;
+            background: #fff;
+            color: var(--ink);
         }
 
-        .mini-card strong,
-        .stage strong,
-        .alert strong {
-            display: block;
-            margin-bottom: 8px;
+        .button-dark {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+        }
+
+        .cta-row,
+        .status-grid,
+        .pipeline {
+            display: grid;
+            gap: 12px;
+        }
+
+        .cta-row {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            margin-top: 26px;
+        }
+
+        .status-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin-top: 18px;
+        }
+
+        .status-card,
+        .pipeline li {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #fff;
+            padding: 16px;
+        }
+
+        .status-card p {
+            margin: 0;
+        }
+
+        .pipeline {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .pipeline li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .pill {
+            flex: 0 0 auto;
+            border-radius: 999px;
+            padding: 6px 10px;
+            background: rgba(37, 99, 235, 0.10);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .pill.warning {
+            background: rgba(185, 28, 28, 0.10);
+            color: var(--danger);
         }
 
         .stack {
@@ -146,133 +239,99 @@
         }
 
         .tag {
-            padding: 8px 12px;
             border-radius: 999px;
-            background: rgba(15, 118, 110, 0.08);
+            padding: 8px 12px;
+            background: rgba(15, 118, 110, 0.10);
             color: var(--primary-dark);
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .section {
-            margin-top: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-top: 22px;
         }
 
-        h2 {
-            margin: 0 0 12px;
-            font-size: 24px;
-        }
-
-        p,
-        li {
-            color: var(--muted);
-            line-height: 1.65;
-        }
-
-        .timeline,
-        .checklist {
-            padding: 0;
-            margin: 0;
-            list-style: none;
-        }
-
-        .stage {
-            position: relative;
-            padding-left: 20px;
-        }
-
-        .stage::before {
-            content: "";
-            position: absolute;
-            top: 22px;
-            left: 0;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--primary);
-        }
-
-        .alert {
-            background: rgba(185, 28, 28, 0.06);
-            border-color: rgba(185, 28, 28, 0.18);
-        }
-
-        .footer-note {
-            margin-top: 24px;
-            font-size: 14px;
+        .note {
+            border-left: 4px solid var(--danger);
         }
 
         @media (max-width: 900px) {
+            .topbar,
             .hero,
-            .mini-grid,
-            .cta-row {
+            .section,
+            .status-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .nav {
+                justify-content: flex-start;
+            }
+
+            .hero-main {
+                min-height: 360px;
             }
         }
     </style>
 </head>
 <body>
     <main class="page">
+        <header class="topbar">
+            <div class="brand">
+                <span class="brand-mark">T</span>
+                <span>Task DevOps</span>
+            </div>
+            <nav class="nav" aria-label="Liên kết chính">
+                <a class="button button-secondary" href="login/register.html">Đăng ký</a>
+                <a class="button button-secondary" href="login/login.html">Đăng nhập</a>
+                <a class="button button-primary" href="tasks/index.html">Mở dashboard</a>
+            </nav>
+        </header>
+
         <section class="hero">
-            <article class="panel">
-                <p class="eyebrow">DevOps Rollback Demo</p>
-                <h1>Web quan ly task co chu y tao loi de demo pipeline, deploy va rollback</h1>
-                <p class="lead">
-                    Ung dung nay dung de minh hoa quy trinh tu source branch len GitHub, scan secret, test tu dong,
-                    build Docker, deploy len staging tren EC2 va rollback khi phat hien loi nghiem trong.
-                </p>
-
-                <div class="cta-row">
-                    <a class="button button-primary" href="login/register.html">Dang ky tai khoan</a>
-                    <a class="button button-secondary" href="login/login.html">Dang nhap</a>
-                    <a class="button button-secondary" href="tasks/index.html">Mo trang task</a>
+            <article class="panel hero-main">
+                <div>
+                    <p class="eyebrow">DevOps Rollback Demo</p>
+                    <h1>Quản lý task, kiểm thử pipeline và rollback trong một giao diện gọn gàng</h1>
+                    <p>
+                        Ứng dụng PHP/MySQL dùng cho bài demo CI/CD: tạo task, kiểm tra runtime, build Docker
+                        và mô phỏng lỗi để quan sát quy trình rollback.
+                    </p>
                 </div>
-
-                <div class="mini-grid">
-                    <div class="mini-card">
-                        <strong>Muc tieu demo</strong>
-                        <p>Phan biet sai khac giua local va staging thong qua ket noi database that, bien moi truong va hanh vi runtime.</p>
-                    </div>
-                    <div class="mini-card">
-                        <strong>Secret leak</strong>
-                        <p>Co san mot API debug khong an toan de cho thay truong hop hardcode DB host, user, password trong source.</p>
-                    </div>
-                    <div class="mini-card">
-                        <strong>Task CRUD</strong>
-                        <p>Them, sua, xoa, doc task deu di qua MySQL de de dang quan sat log, migration va loi runtime.</p>
-                    </div>
-                    <div class="mini-card">
-                        <strong>Rollback trigger</strong>
-                        <p>Co mot diem vao bi mat gay HTTP 500 co chu dich de demo health check fail va quay lai image cu.</p>
-                    </div>
+                <div class="cta-row">
+                    <a class="button button-primary" href="login/register.html">Tạo tài khoản</a>
+                    <a class="button button-dark" href="login/login.html">Đăng nhập</a>
+                    <a class="button button-dark" href="tasks/index.html">Vào task</a>
                 </div>
             </article>
 
             <aside class="panel">
-                <p class="eyebrow">CI/CD Flow</p>
-                <h2>Pipeline mo ta</h2>
-                <ul class="timeline">
-                    <li class="stage">
-                        <strong>Push len `develop`</strong>
-                        <p>GitHub Actions chay tu dong khi branch moi duoc day len hoac tao pull request.</p>
-                    </li>
-                    <li class="stage">
-                        <strong>Security scan va unit test</strong>
-                        <p>Phat hien secret hardcode, loi code va regression truoc khi build image.</p>
-                    </li>
-                    <li class="stage">
-                        <strong>Build Docker va push registry</strong>
-                        <p>Dong goi web app thanh image de su dung nhat quan giua local, CI va EC2 staging.</p>
-                    </li>
-                    <li class="stage">
-                        <strong>Staging deploy len EC2</strong>
-                        <p>Pull image moi, chay container, sau do thuc hien smoke test hoac health check.</p>
-                    </li>
-                    <li class="stage">
-                        <strong>Rollback neu loi</strong>
-                        <p>Khi endpoint bi loi 500 hoac health check fail, pipeline co the tra ve image tag truoc do.</p>
-                    </li>
-                </ul>
+                <h2>Trạng thái demo</h2>
+                <div class="status-grid">
+                    <div class="status-card">
+                        <h3>CRUD task</h3>
+                        <p>Đã có thêm, sửa, xóa và đổi trạng thái task qua MySQL.</p>
+                    </div>
+                    <div class="status-card">
+                        <h3>Debug runtime</h3>
+                        <p>Dashboard có mục xem cấu hình DB phục vụ demo secret scan.</p>
+                    </div>
+                    <div class="status-card">
+                        <h3>Trigger lỗi</h3>
+                        <p>Có endpoint trả lỗi 500 có chủ đích cho phần rollback.</p>
+                    </div>
+                    <div class="status-card">
+                        <h3>Docker</h3>
+                        <p>App chạy bằng Docker Compose với service web và MySQL.</p>
+                    </div>
+                </div>
 
                 <div class="stack">
                     <span class="tag">PHP</span>
@@ -280,44 +339,26 @@
                     <span class="tag">Docker</span>
                     <span class="tag">GitHub Actions</span>
                     <span class="tag">EC2</span>
-                    <span class="tag">Secret Scan</span>
                 </div>
             </aside>
         </section>
 
-        <section class="section hero">
+        <section class="section">
             <article class="panel">
-                <p class="eyebrow">Cac buoc demo</p>
-                <h2>Checklist thuyet trinh</h2>
-                <ul class="checklist">
-                    <li class="stage">
-                        <strong>1. Dang ky va dang nhap</strong>
-                        <p>Tao user moi, luu xuong bang `users`, sau do dang nhap de vao khu task dashboard.</p>
-                    </li>
-                    <li class="stage">
-                        <strong>2. CRUD task voi database that</strong>
-                        <p>Them, sua, doi trang thai va xoa task de chung minh local va staging deu dung chung luong DB-backed.</p>
-                    </li>
-                    <li class="stage">
-                        <strong>3. Mo phan debug insecure</strong>
-                        <p>Xem thong tin DB host, DB user va password dang duoc app doc tu source/env de noi ve quan ly secret.</p>
-                    </li>
-                    <li class="stage">
-                        <strong>4. Bam diem vao bi mat</strong>
-                        <p>Kich hoat endpoint loi co chu dich de tra ve `HTTP 500`, lam dau vao cho rollback/smoke test fail.</p>
-                    </li>
+                <h2>Luồng CI/CD</h2>
+                <ul class="pipeline">
+                    <li><span>Security scan bằng Gitleaks</span><span class="pill">Có</span></li>
+                    <li><span>Unit test</span><span class="pill warning">Placeholder</span></li>
+                    <li><span>Build và push Docker image</span><span class="pill">Có</span></li>
+                    <li><span>Deploy staging / rollback tự động</span><span class="pill warning">Chưa thấy job</span></li>
                 </ul>
             </article>
 
-            <article class="panel alert">
-                <p class="eyebrow">Canh bao</p>
-                <h2>Noi dung nay co chu dich khong an toan</h2>
+            <article class="panel note">
+                <h2>Lưu ý bảo mật</h2>
                 <p>
-                    Ung dung nay duoc chinh sua de phuc vu bai demo DevOps. API debug va secret leak la chu y de trinh bay
-                    rui ro, khong phai cach xay dung cho moi truong production that.
-                </p>
-                <p class="footer-note">
-                    Diem vao gay loi se xuat hien trong dashboard task bang mot nut kin va mot phim tat de de demo rollback.
+                    Một số endpoint debug và trigger lỗi được giữ lại để phục vụ bài demo DevOps.
+                    Không dùng các phần này cho môi trường production.
                 </p>
             </article>
         </section>

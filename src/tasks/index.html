@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevOps Task Dashboard</title>
+    <title>Task Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,32 +11,31 @@
         <section class="hero">
             <div>
                 <p class="eyebrow">DevOps Staging Demo</p>
-                <h1>Dashboard task cho demo pipeline va rollback</h1>
+                <h1>Dashboard quản lý task</h1>
                 <p id="welcomeText" class="muted"></p>
-                <p class="muted">Trang nay co CRUD task that, khu debug secret leak va mot diem vao bi mat de gay loi HTTP 500.</p>
             </div>
             <div class="hero-actions">
-                <a class="ghost-link" href="../index.html">Ve landing page</a>
-                <button class="secondary-button" type="button" onclick="logout()">Dang xuat</button>
+                <a class="ghost-link" href="../index.html">Trang chủ</a>
+                <button class="secondary-button" type="button" onclick="logout()">Đăng xuất</button>
             </div>
         </section>
 
         <section class="grid">
             <div class="panel">
                 <div class="panel-head">
-                    <h2>Form task</h2>
-                    <button class="ghost-button" type="button" onclick="resetTaskForm()">Lam moi</button>
+                    <h2>Thông tin task</h2>
+                    <button class="ghost-button" type="button" onclick="resetTaskForm()">Làm mới</button>
                 </div>
 
                 <input type="hidden" id="taskId">
 
-                <label for="taskTitle">Tieu de</label>
-                <input type="text" id="taskTitle" placeholder="Nhap tieu de task">
+                <label for="taskTitle">Tiêu đề</label>
+                <input type="text" id="taskTitle" placeholder="Nhập tiêu đề task">
 
-                <label for="taskDescription">Mo ta</label>
-                <textarea id="taskDescription" rows="5" placeholder="Nhap mo ta task"></textarea>
+                <label for="taskDescription">Mô tả</label>
+                <textarea id="taskDescription" rows="5" placeholder="Nhập mô tả ngắn"></textarea>
 
-                <label for="taskStatus">Trang thai</label>
+                <label for="taskStatus">Trạng thái</label>
                 <select id="taskStatus">
                     <option value="todo">Todo</option>
                     <option value="doing">Doing</option>
@@ -44,8 +43,8 @@
                 </select>
 
                 <div class="actions">
-                    <button type="button" onclick="createTask()">Tao task</button>
-                    <button class="secondary-button" type="button" onclick="updateTask()">Cap nhat task</button>
+                    <button type="button" onclick="createTask()">Tạo task</button>
+                    <button class="secondary-button" type="button" onclick="updateTask()">Cập nhật</button>
                 </div>
 
                 <p id="taskMessage" class="message"></p>
@@ -53,8 +52,8 @@
 
             <div class="panel">
                 <div class="panel-head">
-                    <h2>Danh sach task</h2>
-                    <button class="ghost-button" type="button" onclick="loadTasks()">Tai lai</button>
+                    <h2>Danh sách task</h2>
+                    <button class="ghost-button" type="button" onclick="loadTasks()">Tải lại</button>
                 </div>
                 <div id="taskList" class="task-list"></div>
             </div>
@@ -63,27 +62,22 @@
         <section class="insight-grid">
             <div class="panel">
                 <div class="panel-head">
-                    <h2>Debug secret leak</h2>
-                    <button class="ghost-button" type="button" onclick="loadDebugInfo()">Tai thong tin</button>
+                    <h2>Debug runtime</h2>
+                    <button class="ghost-button" type="button" onclick="loadDebugInfo()">Tải thông tin</button>
                 </div>
-                <p class="muted">API nay co chu dich tra ve thong tin DB de demo secret scan va sai khac giua local, staging, EC2.</p>
                 <div id="debugInfo" class="debug-card">
-                    <p>Chua tai thong tin runtime.</p>
+                    <p>Chưa tải thông tin runtime.</p>
                 </div>
             </div>
 
-            <div class="panel">
+            <div class="panel rollback-panel">
                 <div class="panel-head">
                     <h2>Rollback trigger</h2>
-                    <button id="secretTriggerButton" class="danger-button hidden-trigger" type="button" onclick="triggerRollbackDemo()">Secret trigger</button>
+                    <button id="secretTriggerButton" class="danger-button hidden-trigger" type="button" onclick="triggerRollbackDemo()">Kích hoạt lỗi</button>
                 </div>
-                <p class="muted">
-                    Nut bi an nay duoc dung de tao loi co chu dich. Co the mo no bang cach click 5 lan vao tieu de trang
-                    hoac bam phim <strong>Shift + R</strong>.
-                </p>
                 <div class="status-card">
-                    <p><strong>Duong dan loi:</strong> <code>tasks/api/trigger-failure.php</code></p>
-                    <p><strong>Hanh vi:</strong> goi truy van vao bang khong ton tai va tra ve <code>HTTP 500</code>.</p>
+                    <p><strong>Endpoint:</strong> <code>tasks/api/trigger-failure.php</code></p>
+                    <p><strong>Kết quả mong đợi:</strong> <code>HTTP 500</code></p>
                     <p id="rollbackMessage" class="message"></p>
                 </div>
             </div>

@@ -1,7 +1,11 @@
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(180deg, #eef4ff 0%, #f8fafc 100%);
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.13), transparent 38%),
+        linear-gradient(315deg, rgba(37, 99, 235, 0.11), transparent 35%),
+        #f6f7fb;
     color: #0f172a;
 }
 
@@ -15,49 +19,74 @@ body {
 
 .box {
     width: 100%;
-    max-width: 420px;
+    max-width: 430px;
     background: #ffffff;
-    padding: 24px;
+    padding: 30px;
     text-align: center;
-    border-radius: 16px;
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.12);
+}
+
+.box::before {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 5px;
+    margin: 0 auto 18px;
+    border-radius: 999px;
+    background: #0f766e;
 }
 
 h1 {
     margin: 0 0 8px;
+    font-size: 32px;
+    letter-spacing: 0;
 }
 
 .subtitle {
-    margin: 0 0 20px;
+    margin: 0 0 22px;
     color: #475569;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 15px;
+    line-height: 1.55;
 }
 
 input {
     width: 100%;
-    padding: 12px 14px;
+    padding: 13px 14px;
     margin: 8px 0;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
+    border: 1px solid #d7dee9;
+    border-radius: 12px;
     box-sizing: border-box;
+    background: #fbfcfe;
     font-size: 15px;
+    outline: none;
+    transition: border 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+input:focus {
+    border-color: #0f766e;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
 }
 
 button {
     width: 100%;
+    min-height: 46px;
     padding: 12px 14px;
     margin-top: 12px;
-    background: #2563eb;
+    background: #0f766e;
     color: #ffffff;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 800;
+    transition: transform 0.18s ease, background 0.18s ease;
 }
 
 button:hover {
-    background: #1d4ed8;
+    background: #115e59;
+    transform: translateY(-1px);
 }
 
 .message {
@@ -67,9 +96,9 @@ button:hover {
 }
 
 a {
-    color: #2563eb;
+    color: #0f766e;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 800;
 }
 
 a:hover {
@@ -94,9 +123,9 @@ a:hover {
     margin: 0 0 8px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #2563eb;
+    color: #0f766e;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 h2 {
