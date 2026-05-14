@@ -1,0 +1,13 @@
+[[rules]]
+    description = "Phát hiện Hard-coded Password trong PHP"
+    id = "php-password-leak"
+    regex = '''(?i)\$dbPass\s*=\s*['"]([^'"]+)['"]'''
+    keywords = ["dbPass", "password"]
+
+[allowlist]
+    description = "Bỏ qua các file không cần thiết"
+    paths = [
+        '''node_modules/''',
+        '''vendor/''',
+        '''\.gitignore'''
+    ]

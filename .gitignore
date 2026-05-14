@@ -1,3 +1,6 @@
+/vendor/
 node_modules/
 .env
 *.log
+.phpunit.result.cache
+desktop.ini
