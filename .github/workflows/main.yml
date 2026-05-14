@@ -73,6 +73,7 @@ jobs:
           # SỬA LỖI 1: Thêm đường dẫn file schema.sql để EC2 khởi tạo được Database
           source: "docker-compose.yml,src/database/schema.sql"
           target: "/home/ubuntu/"
+          overwrite: true
 
       - name: Deploy to Staging
         uses: appleboy/ssh-action@v1.0.3
