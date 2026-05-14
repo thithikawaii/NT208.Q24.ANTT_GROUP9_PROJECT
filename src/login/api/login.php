@@ -1,10 +1,10 @@
 <?php
 
 require_once 'config.php';
+require_once 'AuthService.php';
 
 $input = json_decode(file_get_contents('php://input'), true);
 
-// Kiểm tra nếu dữ liệu không phải là mảng
 if (!is_array($input)) {
     http_response_code(400);
     echo json_encode([
@@ -14,32 +14,24 @@ if (!is_array($input)) {
     exit;
 }
 
-$username = trim($input['username'] ?? ''); // Sử dụng trim để loại bỏ khoảng trắng ở đầu và cuối
-$password = $input['password'] ?? ''; // Không sử dụng trim cho mật khẩu để giữ nguyên khoảng trắng nếu có
-
-// Kiểm tra nếu có trường nào bị bỏ trống
-if ($username === '' || $password === '') {
-    http_response_code(400);
-    echo json_encode([
-        "success" => false,
-        "message" => "Vui lòng nhập đầy đủ thông tin"
-    ]);
-    exit;
-}
+$username = trim($input['username'] ?? '');
+$password = $input['password'] ?? '';
 
 $stmt = mysqli_prepare(
     $conn,
-    "SELECT id, username, email, password FROM users WHERE username = ?"
+    "SELECT id, username, email, password FROM users WHERE username = ? LIMIT 1"
 );
 mysqli_stmt_bind_param($stmt, "s", $username);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
-$userFromDB = mysqli_fetch_assoc($result);
+$userFromDB = mysqli_fetch_assoc($result) ?: null;
 
-require_once 'AuthService.php';
 $auth = new AuthService();
 $loginResult = $auth->verify($username, $password, $userFromDB);
+
 http_response_code($loginResult['status']);
 echo json_encode($loginResult['data']);
+
 mysqli_stmt_close($stmt);
 mysqli_close($conn);
+?>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="page">
+        <section class="hero">
+            <div>
+                <p class="eyebrow">Bước 2 · Dashboard demo</p>
+                <h1>Quản lý task và kiểm tra rollback</h1>
+                <p id="welcomeText" class="muted"></p>
+            </div>
+            <div class="hero-actions">
+                <a class="ghost-link" href="../index.html">Trang chủ</a>
+                <button class="secondary-button" type="button" onclick="logout()">Đăng xuất</button>
+            </div>
+        </section>
+
+        <section class="demo-flow" aria-label="Luồng demo">
+            <article class="flow-card">
+                <span>1</span>
+                <strong>Task CRUD</strong>
+                <p>Tạo dữ liệu thật trong MySQL.</p>
+            </article>
+            <article class="flow-card">
+                <span>2</span>
+                <strong>Runtime</strong>
+                <p>Kiểm tra cấu hình container.</p>
+            </article>
+            <article class="flow-card danger">
+                <span>3</span>
+                <strong>Rollback</strong>
+                <p>Kích hoạt endpoint lỗi HTTP 500.</p>
+            </article>
+        </section>
+
+        <section class="grid">
+            <div class="panel">
+                <div class="panel-head">
+                    <div>
+                        <p class="eyebrow">Task</p>
+                        <h2>Thông tin task</h2>
+                    </div>
+                    <button class="ghost-button" type="button" onclick="resetTaskForm()">Làm mới</button>
+                </div>
+
+                <input type="hidden" id="taskId">
+
+                <label for="taskTitle">Tiêu đề</label>
+                <input type="text" id="taskTitle" placeholder="Nhập tiêu đề task">
+
+                <label for="taskDescription">Mô tả</label>
+                <textarea id="taskDescription" rows="5" placeholder="Nhập mô tả ngắn"></textarea>
+
+                <label for="taskStatus">Trạng thái</label>
+                <select id="taskStatus">
+                    <option value="todo">Todo</option>
+                    <option value="doing">Doing</option>
+                    <option value="done">Done</option>
+                </select>
+
+                <div class="actions">
+                    <button type="button" onclick="createTask()">Tạo task</button>
+                    <button class="secondary-button" type="button" onclick="updateTask()">Cập nhật</button>
+                </div>
+
+                <p id="taskMessage" class="message"></p>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <div>
+                        <p class="eyebrow">Danh sách</p>
+                        <h2>Task trong database</h2>
+                    </div>
+                    <button class="ghost-button" type="button" onclick="loadTasks()">Tải lại</button>
+                </div>
+                <div id="taskList" class="task-list"></div>
+            </div>
+        </section>
+
+        <section class="insight-grid">
+            <div class="panel">
+                <div class="panel-head">
+                    <div>
+                        <p class="eyebrow">Bước 3 · Runtime</p>
+                        <h2>Debug cấu hình</h2>
+                    </div>
+                    <button class="ghost-button" type="button" onclick="loadDebugInfo()">Tải thông tin</button>
+                </div>
+                <div id="debugInfo" class="debug-card">
+                    <p>Chưa tải thông tin runtime.</p>
+                </div>
+            </div>
+
+            <div class="panel rollback-panel">
+                <div class="panel-head">
+                    <div>
+                        <p class="eyebrow danger-text">Bước 4 · Rollback</p>
+                        <h2>Endpoint tạo lỗi</h2>
+                    </div>
+                    <button id="secretTriggerButton" class="danger-button hidden-trigger" type="button" onclick="triggerRollbackDemo()">Kích hoạt lỗi</button>
+                </div>
+                <div class="status-card">
+                    <p><strong>Endpoint:</strong> <code>tasks/api/trigger-failure.php</code></p>
+                    <p><strong>Kết quả mong đợi:</strong> <code>HTTP 500</code></p>
+                    <p><strong>Mục đích:</strong> Dùng để demo smoke test fail và rollback image cũ.</p>
+                    <p id="rollbackMessage" class="message"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

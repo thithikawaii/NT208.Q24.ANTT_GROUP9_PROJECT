@@ -1,127 +1,5 @@
-const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
 const taskStore = new Map();
-
-async function parseJsonResponse(response) {
-  let data = null;
-
-  try {
-    data = await response.json();
-  } catch (error) {
-    data = null;
-  }
-
-  if (!response.ok) {
-    const message = data?.message || `Request failed with status ${response.status}`;
-    throw new Error(message);
-  }
-
-  if (!data || typeof data !== "object") {
-    throw new Error("API không trả về JSON hợp lệ");
-  }
-
-  return data;
-}
-
-async function register() {
-  const usernameInput = document.getElementById("registerUsername");
-  const emailInput = document.getElementById("registerEmail");
-  const passwordInput = document.getElementById("registerPassword");
-  const confirmPasswordInput = document.getElementById("registerConfirmPassword");
-  const message = document.getElementById("registerMessage");
-
-  if (!usernameInput || !emailInput || !passwordInput || !confirmPasswordInput || !message) {
-    return;
-  }
-
-  const username = usernameInput.value.trim();
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
-  const confirmPassword = confirmPasswordInput.value;
-
-  if (!username || !email || !password || !confirmPassword) {
-    message.innerText = "Vui lòng nhập đầy đủ thông tin";
-    return;
-  }
-
-  if (!strongPasswordRegex.test(password)) {
-    message.innerText = "Mật khẩu phải có ít nhất 8 ký tự, chữ hoa, chữ thường, số và ký tự đặc biệt";
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    message.innerText = "Mật khẩu nhập lại không khớp";
-    return;
-  }
-
-  try {
-    const response = await fetch("api/register.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-        confirmPassword
-      })
-    });
-
-    const data = await parseJsonResponse(response);
-    message.innerText = data.message || "";
-
-    if (data.success) {
-      window.location.href = "login.html";
-    }
-  } catch (error) {
-    message.innerText = error.message || "Không kết nối được API";
-  }
-}
-
-async function login() {
-  const usernameInput = document.getElementById("loginUsername");
-  const passwordInput = document.getElementById("loginPassword");
-  const message = document.getElementById("loginMessage");
-
-  if (!usernameInput || !passwordInput || !message) {
-    return;
-  }
-
-  const username = usernameInput.value.trim();
-  const password = passwordInput.value;
-
-  if (!username || !password) {
-    message.innerText = "Vui lòng nhập đầy đủ thông tin";
-    return;
-  }
-
-  try {
-    const response = await fetch("api/login.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username,
-        password
-      })
-    });
-
-    const data = await parseJsonResponse(response);
-    if (!data.user) {
-      throw new Error(data.message || "API không trả về thông tin user");
-    }
-    localStorage.setItem("user", JSON.stringify(data.user));
-    window.location.href = "../tasks/index.html";
-  } catch (error) {
-    message.innerText = error.message || "Không kết nối được API";
-  }
-}
-
-function logout() {
-  localStorage.removeItem("user");
-  window.location.href = "login.html";
-}
+let secretRevealClicks = 0;
 
 function getStoredUser() {
   const rawUser = localStorage.getItem("user");
@@ -142,11 +20,36 @@ function requireAuth() {
   const user = getStoredUser();
 
   if (!user) {
-    window.location.href = "login.html";
+    window.location.href = "../login/login.html";
     return null;
   }
 
   return user;
+}
+
+function logout() {
+  localStorage.removeItem("user");
+  window.location.href = "../login/login.html";
+}
+
+async function parseJsonResponse(response) {
+  let data = null;
+
+  try {
+    data = await response.json();
+  } catch (error) {
+    data = null;
+  }
+
+  if (!response.ok) {
+    throw new Error(data?.message || `Request failed with status ${response.status}`);
+  }
+
+  if (!data || typeof data !== "object") {
+    throw new Error("API không trả về JSON hợp lệ");
+  }
+
+  return data;
 }
 
 function setTaskMessage(text, isError = true) {
@@ -189,25 +92,6 @@ function fillTaskForm(task) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function startEditTask(taskId) {
-  const task = taskStore.get(Number(taskId));
-  if (!task) {
-    setTaskMessage("Không tìm thấy task cần sửa");
-    return;
-  }
-
-  fillTaskForm(task);
-}
-
 function renderTasks(tasks) {
   const taskList = document.getElementById("taskList");
 
@@ -216,6 +100,7 @@ function renderTasks(tasks) {
   }
 
   if (!Array.isArray(tasks) || tasks.length === 0) {
+    taskStore.clear();
     taskList.innerHTML = '<div class="task-card"><p>Chưa có task nào.</p></div>';
     return;
   }
@@ -235,6 +120,7 @@ function renderTasks(tasks) {
       <p>${escapeHtml(task.description || "Không có mô tả")}</p>
       <div class="task-actions">
         <button type="button" onclick="startEditTask(${task.id})">Sửa</button>
+        <button type="button" class="danger-button" onclick="deleteTask(${task.id})">Xóa</button>
         <button type="button" class="ghost-button" onclick="changeTaskStatus(${task.id}, 'todo')">Todo</button>
         <button type="button" class="ghost-button" onclick="changeTaskStatus(${task.id}, 'doing')">Doing</button>
         <button type="button" class="ghost-button" onclick="changeTaskStatus(${task.id}, 'done')">Done</button>
@@ -243,12 +129,32 @@ function renderTasks(tasks) {
   `).join("");
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function startEditTask(taskId) {
+  const task = taskStore.get(Number(taskId));
+  if (!task) {
+    setTaskMessage("Không tìm thấy task cần sửa");
+    return;
+  }
+
+  fillTaskForm(task);
+}
+
 async function loadTasks() {
-  const user = requireAuth();
-  if (!user) return;
+  if (!requireAuth()) {
+    return;
+  }
 
   try {
-    const response = await fetch("../tasks/api/list.php");
+    const response = await fetch("api/list.php");
     const data = await parseJsonResponse(response);
     renderTasks(data.data || []);
   } catch (error) {
@@ -270,7 +176,7 @@ async function createTask() {
   }
 
   try {
-    const response = await fetch("../tasks/api/create.php", {
+    const response = await fetch("api/create.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -293,8 +199,9 @@ async function createTask() {
 }
 
 async function updateTask() {
-  const user = requireAuth();
-  if (!user) return;
+  if (!requireAuth()) {
+    return;
+  }
 
   const id = document.getElementById("taskId")?.value.trim() || "";
   const title = document.getElementById("taskTitle")?.value.trim() || "";
@@ -312,7 +219,7 @@ async function updateTask() {
   }
 
   try {
-    const response = await fetch("../tasks/api/update.php", {
+    const response = await fetch("api/update.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -335,11 +242,12 @@ async function updateTask() {
 }
 
 async function changeTaskStatus(id, status) {
-  const user = requireAuth();
-  if (!user) return;
+  if (!requireAuth()) {
+    return;
+  }
 
   try {
-    const response = await fetch("../tasks/api/update-status.php", {
+    const response = await fetch("api/update-status.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -358,18 +266,128 @@ async function changeTaskStatus(id, status) {
   }
 }
 
+async function deleteTask(id) {
+  if (!requireAuth()) {
+    return;
+  }
+
+  if (!window.confirm(`Xóa task #${id}?`)) {
+    return;
+  }
+
+  try {
+    const response = await fetch("api/delete.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id })
+    });
+
+    const data = await parseJsonResponse(response);
+    setTaskMessage(data.message, false);
+    resetTaskForm();
+    await loadTasks();
+  } catch (error) {
+    setTaskMessage(error.message || "Không xóa được task");
+  }
+}
+
+function renderDebugInfo(data) {
+  const debugInfo = document.getElementById("debugInfo");
+  if (!debugInfo) {
+    return;
+  }
+
+  const items = [
+    ["App env", data.appEnv || "unknown"],
+    ["DB host", data.dbHost || "unknown"],
+    ["DB name", data.dbName || "unknown"],
+    ["DB user", data.dbUser || "unknown"],
+    ["DB password", data.dbPass || "(empty)"],
+    ["Password source", data.passwordSource || "unknown"]
+  ];
+
+  debugInfo.innerHTML = `
+    <div class="debug-grid">
+      ${items.map(([label, value]) => `
+        <div class="debug-item">
+          <strong>${escapeHtml(label)}</strong>
+          <code>${escapeHtml(String(value))}</code>
+        </div>
+      `).join("")}
+    </div>
+    <p class="danger-note">Thông tin này đang được hiển thị có chủ đích để demo secret management và security scan.</p>
+  `;
+}
+
+async function loadDebugInfo() {
+  try {
+    const response = await fetch("api/debug-info.php");
+    const data = await parseJsonResponse(response);
+    renderDebugInfo(data.data || {});
+  } catch (error) {
+    setTaskMessage(error.message || "Không tải được thông tin debug");
+  }
+}
+
+function revealSecretTrigger() {
+  const button = document.getElementById("secretTriggerButton");
+  if (!button) {
+    return;
+  }
+
+  button.classList.add("revealed");
+}
+
+function handleSecretRevealClick() {
+  secretRevealClicks += 1;
+  if (secretRevealClicks >= 5) {
+    revealSecretTrigger();
+  }
+}
+
+async function triggerRollbackDemo() {
+  const rollbackMessage = document.getElementById("rollbackMessage");
+  if (rollbackMessage) {
+    rollbackMessage.style.color = "#b91c1c";
+    rollbackMessage.innerText = "Đang gọi endpoint gây lỗi có chủ đích...";
+  }
+
+  try {
+    const response = await fetch("api/trigger-failure.php");
+    await parseJsonResponse(response);
+  } catch (error) {
+    if (rollbackMessage) {
+      rollbackMessage.style.color = "#b91c1c";
+      rollbackMessage.innerText = error.message || "Đã nhận được HTTP 500 như mong đợi";
+    }
+    return;
+  }
+
+  if (rollbackMessage) {
+    rollbackMessage.style.color = "#15803d";
+    rollbackMessage.innerText = "Endpoint không lỗi, hãy kiểm tra lại cấu hình demo.";
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  const welcomeText = document.getElementById("welcomeText");
-
-  if (!welcomeText) {
-    return;
-  }
-
   const user = requireAuth();
-  if (!user) {
-    return;
+  if (!user) return;
+
+  const welcomeText = document.getElementById("welcomeText");
+  if (welcomeText) {
+    welcomeText.innerText = `Xin chào ${user.username} (${user.email})`;
+    welcomeText.addEventListener("click", handleSecretRevealClick);
   }
 
-  welcomeText.innerText = `Xin chào ${user.username} (${user.email})`;
+  document.querySelector("h1")?.addEventListener("click", handleSecretRevealClick);
+  document.addEventListener("keydown", (event) => {
+    if (event.shiftKey && event.key.toLowerCase() === "r") {
+      revealSecretTrigger();
+    }
+  });
+
   loadTasks();
+  loadDebugInfo();
 });
