@@ -71,9 +71,17 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            mkdir -p /home/ubuntu/src/database
+            echo "Cleaning old deploy files..."
+
             rm -f /home/ubuntu/docker-compose.yml
-            rm -f /home/ubuntu/src/database/schema.sql
+
+            if [ -e /home/ubuntu/src/database/schema.sql ]; then
+              rm -rf /home/ubuntu/src/database/schema.sql
+            fi
+
+            mkdir -p /home/ubuntu/src/database
+
+            echo "Deploy folder is ready."
 
       - name: Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.7
