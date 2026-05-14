@@ -8,10 +8,11 @@
 </head>
 <body>
     <div class="auth-shell">
+        <a class="back-link" href="../index.html">Trang chủ</a>
         <div class="box">
-            <p class="eyebrow">Task DevOps</p>
+            <p class="eyebrow">Bước 1 · Tạo tài khoản</p>
             <h1>Đăng ký</h1>
-            <p class="subtitle">Mật khẩu cần có chữ hoa, chữ thường, số và ký tự đặc biệt.</p>
+            <p class="subtitle">Tài khoản mới sẽ được lưu vào MySQL để demo luồng web và database.</p>
 
             <input type="text" id="registerUsername" placeholder="Tên đăng nhập">
             <input type="email" id="registerEmail" placeholder="Email">
@@ -21,7 +22,10 @@
             <button type="button" onclick="register()">Đăng ký</button>
 
             <p id="registerMessage" class="message"></p>
-            <a href="login.html">Đã có tài khoản? Đăng nhập</a>
+            <p class="hint">Mật khẩu cần có chữ hoa, chữ thường, số và ký tự đặc biệt.</p>
+            <div class="auth-links">
+                <a href="login.html">Đã có tài khoản? Đăng nhập</a>
+            </div>
         </div>
     </div>
 

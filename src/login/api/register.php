@@ -8,7 +8,7 @@ if (!is_array($input)) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Du lieu gui len khong hop le"
+        "message" => "Dữ liệu gửi lên không hợp lệ"
     ]);
     exit;
 }
@@ -22,7 +22,7 @@ if ($username === '' || $email === '' || $password === '' || $confirmPassword ==
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Vui long nhap day du thong tin"
+        "message" => "Vui lòng nhập đầy đủ thông tin"
     ]);
     exit;
 }
@@ -31,7 +31,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Email khong hop le"
+        "message" => "Email không hợp lệ"
     ]);
     exit;
 }
@@ -40,7 +40,7 @@ if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/', $pas
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Mat khau phai co it nhat 8 ky tu, chu hoa, chu thuong, so va ky tu dac biet"
+        "message" => "Mật khẩu phải có ít nhất 8 ký tự, chữ hoa, chữ thường, số và ký tự đặc biệt"
     ]);
     exit;
 }
@@ -49,7 +49,7 @@ if ($password !== $confirmPassword) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Mat khau nhap lai khong khop"
+        "message" => "Mật khẩu nhập lại không khớp"
     ]);
     exit;
 }
@@ -65,7 +65,7 @@ if (mysqli_fetch_assoc($userResult)) {
     http_response_code(409);
     echo json_encode([
         "success" => false,
-        "message" => "Username da ton tai"
+        "message" => "Username đã tồn tại"
     ]);
     exit;
 }
@@ -82,7 +82,7 @@ if (mysqli_fetch_assoc($emailResult)) {
     http_response_code(409);
     echo json_encode([
         "success" => false,
-        "message" => "Email da duoc su dung"
+        "message" => "Email đã được sử dụng"
     ]);
     exit;
 }
@@ -99,13 +99,13 @@ mysqli_stmt_bind_param($insertStmt, "sss", $username, $email, $hashedPassword);
 if (mysqli_stmt_execute($insertStmt)) {
     echo json_encode([
         "success" => true,
-        "message" => "Dang ky thanh cong"
+        "message" => "Đăng ký thành công"
     ]);
 } else {
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "message" => "Loi he thong"
+        "message" => "Lỗi hệ thống"
     ]);
 }
 

@@ -15,6 +15,10 @@ async function parseJsonResponse(response) {
     throw new Error(message);
   }
 
+  if (!data || typeof data !== "object") {
+    throw new Error("API không trả về JSON hợp lệ");
+  }
+
   return data;
 }
 
@@ -35,17 +39,17 @@ async function register() {
   const confirmPassword = confirmPasswordInput.value;
 
   if (!username || !email || !password || !confirmPassword) {
-    message.innerText = "Vui long nhap day du thong tin";
+    message.innerText = "Vui lòng nhập đầy đủ thông tin";
     return;
   }
 
   if (!strongPasswordRegex.test(password)) {
-    message.innerText = "Mat khau phai co it nhat 8 ky tu, chu hoa, chu thuong, so va ky tu dac biet";
+    message.innerText = "Mật khẩu phải có ít nhất 8 ký tự, chữ hoa, chữ thường, số và ký tự đặc biệt";
     return;
   }
 
   if (password !== confirmPassword) {
-    message.innerText = "Mat khau nhap lai khong khop";
+    message.innerText = "Mật khẩu nhập lại không khớp";
     return;
   }
 
@@ -64,13 +68,13 @@ async function register() {
     });
 
     const data = await parseJsonResponse(response);
-    message.innerText = data.message;
+    message.innerText = data.message || "";
 
     if (data.success) {
       window.location.href = "login.html";
     }
   } catch (error) {
-    message.innerText = error.message || "Khong ket noi duoc API";
+    message.innerText = error.message || "Không kết nối được API";
   }
 }
 
@@ -87,7 +91,7 @@ async function login() {
   const password = passwordInput.value;
 
   if (!username || !password) {
-    message.innerText = "Vui long nhap day du thong tin";
+    message.innerText = "Vui lòng nhập đầy đủ thông tin";
     return;
   }
 
@@ -104,10 +108,13 @@ async function login() {
     });
 
     const data = await parseJsonResponse(response);
+    if (!data.user) {
+      throw new Error(data.message || "API không trả về thông tin user");
+    }
     localStorage.setItem("user", JSON.stringify(data.user));
     window.location.href = "../tasks/index.html";
   } catch (error) {
-    message.innerText = error.message || "Khong ket noi duoc API";
+    message.innerText = error.message || "Không kết nối được API";
   }
 }
 
@@ -178,7 +185,7 @@ function fillTaskForm(task) {
   if (description) description.value = task.description || "";
   if (status) status.value = task.status;
 
-  setTaskMessage("Dang sua task #" + task.id, false);
+  setTaskMessage("Đang sửa task #" + task.id, false);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -194,7 +201,7 @@ function escapeHtml(value) {
 function startEditTask(taskId) {
   const task = taskStore.get(Number(taskId));
   if (!task) {
-    setTaskMessage("Khong tim thay task can sua");
+    setTaskMessage("Không tìm thấy task cần sửa");
     return;
   }
 
@@ -209,7 +216,7 @@ function renderTasks(tasks) {
   }
 
   if (!Array.isArray(tasks) || tasks.length === 0) {
-    taskList.innerHTML = '<div class="task-card"><p>Chua co task nao.</p></div>';
+    taskList.innerHTML = '<div class="task-card"><p>Chưa có task nào.</p></div>';
     return;
   }
 
@@ -225,9 +232,9 @@ function renderTasks(tasks) {
         <span class="badge ${escapeHtml(task.status)}">${escapeHtml(task.status.toUpperCase())}</span>
         <span class="badge todo">#${escapeHtml(String(task.id))}</span>
       </div>
-      <p>${escapeHtml(task.description || "Khong co mo ta")}</p>
+      <p>${escapeHtml(task.description || "Không có mô tả")}</p>
       <div class="task-actions">
-        <button type="button" onclick="startEditTask(${task.id})">Sua</button>
+        <button type="button" onclick="startEditTask(${task.id})">Sửa</button>
         <button type="button" class="ghost-button" onclick="changeTaskStatus(${task.id}, 'todo')">Todo</button>
         <button type="button" class="ghost-button" onclick="changeTaskStatus(${task.id}, 'doing')">Doing</button>
         <button type="button" class="ghost-button" onclick="changeTaskStatus(${task.id}, 'done')">Done</button>
@@ -245,7 +252,7 @@ async function loadTasks() {
     const data = await parseJsonResponse(response);
     renderTasks(data.data || []);
   } catch (error) {
-    setTaskMessage(error.message || "Khong tai duoc danh sach task");
+    setTaskMessage(error.message || "Không tải được danh sách task");
   }
 }
 
@@ -258,7 +265,7 @@ async function createTask() {
   const status = document.getElementById("taskStatus")?.value || "todo";
 
   if (!title) {
-    setTaskMessage("Tieu de task khong duoc de trong");
+    setTaskMessage("Tiêu đề task không được để trống");
     return;
   }
 
@@ -281,7 +288,7 @@ async function createTask() {
     setTaskMessage(data.message, false);
     await loadTasks();
   } catch (error) {
-    setTaskMessage(error.message || "Khong tao duoc task");
+    setTaskMessage(error.message || "Không tạo được task");
   }
 }
 
@@ -295,12 +302,12 @@ async function updateTask() {
   const status = document.getElementById("taskStatus")?.value || "todo";
 
   if (!id) {
-    setTaskMessage("Hay chon task can sua");
+    setTaskMessage("Hãy chọn task cần sửa");
     return;
   }
 
   if (!title) {
-    setTaskMessage("Tieu de task khong duoc de trong");
+    setTaskMessage("Tiêu đề task không được để trống");
     return;
   }
 
@@ -323,7 +330,7 @@ async function updateTask() {
     setTaskMessage(data.message, false);
     await loadTasks();
   } catch (error) {
-    setTaskMessage(error.message || "Khong cap nhat duoc task");
+    setTaskMessage(error.message || "Không cập nhật được task");
   }
 }
 
@@ -347,7 +354,7 @@ async function changeTaskStatus(id, status) {
     setTaskMessage(data.message, false);
     await loadTasks();
   } catch (error) {
-    setTaskMessage(error.message || "Khong doi duoc trang thai task");
+    setTaskMessage(error.message || "Không đổi được trạng thái task");
   }
 }
 
@@ -363,6 +370,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  welcomeText.innerText = `Xin chao ${user.username} (${user.email})`;
+  welcomeText.innerText = `Xin chào ${user.username} (${user.email})`;
   loadTasks();
 });

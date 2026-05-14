@@ -8,7 +8,7 @@ if (!is_array($input)) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Du lieu gui len khong hop le"
+        "message" => "Dữ liệu gửi lên không hợp lệ"
     ]);
     exit;
 }
@@ -22,7 +22,7 @@ if ($title === '') {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Tieu de task khong duoc de trong"
+        "message" => "Tiêu đề task không được để trống"
     ]);
     exit;
 }
@@ -31,7 +31,7 @@ if (!in_array($status, $allowedStatuses, true)) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Trang thai task khong hop le"
+        "message" => "Trạng thái task không hợp lệ"
     ]);
     exit;
 }
@@ -46,7 +46,7 @@ if (!mysqli_stmt_execute($stmt)) {
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "message" => "Khong tao duoc task"
+        "message" => "Không tạo được task"
     ]);
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
@@ -55,7 +55,7 @@ if (!mysqli_stmt_execute($stmt)) {
 
 echo json_encode([
     "success" => true,
-    "message" => "Tao task thanh cong",
+    "message" => "Tạo task thành công",
     "taskId" => mysqli_insert_id($conn)
 ]);
 

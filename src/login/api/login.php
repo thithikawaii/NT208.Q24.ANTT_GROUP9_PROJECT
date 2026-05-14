@@ -9,7 +9,7 @@ if (!is_array($input)) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Du lieu gui len khong hop le"
+        "message" => "Dữ liệu gửi lên không hợp lệ"
     ]);
     exit;
 }

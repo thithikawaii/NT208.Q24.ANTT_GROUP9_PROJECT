@@ -5,7 +5,7 @@ $passwordSource = getenv('DB_PASS') !== false ? 'DB_PASS' : 'DB_PASSWORD';
 
 echo json_encode([
     "success" => true,
-    "message" => "Lay thong tin debug thanh cong",
+    "message" => "Lấy thông tin debug thành công",
     "data" => [
         "appEnv" => getenv('APP_ENV') ?: 'local-demo',
         "dbHost" => $dbHost,

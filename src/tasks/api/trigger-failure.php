@@ -6,13 +6,13 @@ try {
 
     echo json_encode([
         "success" => true,
-        "message" => "Trigger khong gay loi"
+        "message" => "Trigger không gây lỗi"
     ]);
 } catch (Throwable $error) {
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "message" => "Rollback demo: truy van bang khong ton tai tren staging",
+        "message" => "Rollback demo: truy vấn bảng không tồn tại trên staging",
         "error" => $error->getMessage()
     ]);
 }

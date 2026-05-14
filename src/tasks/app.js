@@ -45,6 +45,10 @@ async function parseJsonResponse(response) {
     throw new Error(data?.message || `Request failed with status ${response.status}`);
   }
 
+  if (!data || typeof data !== "object") {
+    throw new Error("API không trả về JSON hợp lệ");
+  }
+
   return data;
 }
 
@@ -84,7 +88,7 @@ function fillTaskForm(task) {
   if (description) description.value = task.description || "";
   if (status) status.value = task.status;
 
-  setTaskMessage("Dang sua task #" + task.id, false);
+  setTaskMessage("Đang sửa task #" + task.id, false);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -97,7 +101,7 @@ function renderTasks(tasks) {
 
   if (!Array.isArray(tasks) || tasks.length === 0) {
     taskStore.clear();
-    taskList.innerHTML = '<div class="task-card"><p>Chua co task nao.</p></div>';
+    taskList.innerHTML = '<div class="task-card"><p>Chưa có task nào.</p></div>';
     return;
   }
 
@@ -113,10 +117,10 @@ function renderTasks(tasks) {
         <span class="badge ${escapeHtml(task.status)}">${escapeHtml(task.status.toUpperCase())}</span>
         <span class="badge todo">#${escapeHtml(String(task.id))}</span>
       </div>
-      <p>${escapeHtml(task.description || "Khong co mo ta")}</p>
+      <p>${escapeHtml(task.description || "Không có mô tả")}</p>
       <div class="task-actions">
-        <button type="button" onclick="startEditTask(${task.id})">Sua</button>
-        <button type="button" class="danger-button" onclick="deleteTask(${task.id})">Xoa</button>
+        <button type="button" onclick="startEditTask(${task.id})">Sửa</button>
+        <button type="button" class="danger-button" onclick="deleteTask(${task.id})">Xóa</button>
         <button type="button" class="ghost-button" onclick="changeTaskStatus(${task.id}, 'todo')">Todo</button>
         <button type="button" class="ghost-button" onclick="changeTaskStatus(${task.id}, 'doing')">Doing</button>
         <button type="button" class="ghost-button" onclick="changeTaskStatus(${task.id}, 'done')">Done</button>
@@ -137,7 +141,7 @@ function escapeHtml(value) {
 function startEditTask(taskId) {
   const task = taskStore.get(Number(taskId));
   if (!task) {
-    setTaskMessage("Khong tim thay task can sua");
+    setTaskMessage("Không tìm thấy task cần sửa");
     return;
   }
 
@@ -154,7 +158,7 @@ async function loadTasks() {
     const data = await parseJsonResponse(response);
     renderTasks(data.data || []);
   } catch (error) {
-    setTaskMessage(error.message || "Khong tai duoc danh sach task");
+    setTaskMessage(error.message || "Không tải được danh sách task");
   }
 }
 
@@ -167,7 +171,7 @@ async function createTask() {
   const status = document.getElementById("taskStatus")?.value || "todo";
 
   if (!title) {
-    setTaskMessage("Tieu de task khong duoc de trong");
+    setTaskMessage("Tiêu đề task không được để trống");
     return;
   }
 
@@ -190,7 +194,7 @@ async function createTask() {
     setTaskMessage(data.message, false);
     await loadTasks();
   } catch (error) {
-    setTaskMessage(error.message || "Khong tao duoc task");
+    setTaskMessage(error.message || "Không tạo được task");
   }
 }
 
@@ -205,12 +209,12 @@ async function updateTask() {
   const status = document.getElementById("taskStatus")?.value || "todo";
 
   if (!id) {
-    setTaskMessage("Hay chon task can sua");
+    setTaskMessage("Hãy chọn task cần sửa");
     return;
   }
 
   if (!title) {
-    setTaskMessage("Tieu de task khong duoc de trong");
+    setTaskMessage("Tiêu đề task không được để trống");
     return;
   }
 
@@ -233,7 +237,7 @@ async function updateTask() {
     setTaskMessage(data.message, false);
     await loadTasks();
   } catch (error) {
-    setTaskMessage(error.message || "Khong cap nhat duoc task");
+    setTaskMessage(error.message || "Không cập nhật được task");
   }
 }
 
@@ -258,7 +262,7 @@ async function changeTaskStatus(id, status) {
     setTaskMessage(data.message, false);
     await loadTasks();
   } catch (error) {
-    setTaskMessage(error.message || "Khong doi duoc trang thai task");
+    setTaskMessage(error.message || "Không đổi được trạng thái task");
   }
 }
 
@@ -267,7 +271,7 @@ async function deleteTask(id) {
     return;
   }
 
-  if (!window.confirm(`Xoa task #${id}?`)) {
+  if (!window.confirm(`Xóa task #${id}?`)) {
     return;
   }
 
@@ -285,7 +289,7 @@ async function deleteTask(id) {
     resetTaskForm();
     await loadTasks();
   } catch (error) {
-    setTaskMessage(error.message || "Khong xoa duoc task");
+    setTaskMessage(error.message || "Không xóa được task");
   }
 }
 
@@ -313,7 +317,7 @@ function renderDebugInfo(data) {
         </div>
       `).join("")}
     </div>
-    <p class="danger-note">Thong tin nay dang bi lo co chu dich de demo secret management va security scan.</p>
+    <p class="danger-note">Thông tin này đang được hiển thị có chủ đích để demo secret management và security scan.</p>
   `;
 }
 
@@ -323,7 +327,7 @@ async function loadDebugInfo() {
     const data = await parseJsonResponse(response);
     renderDebugInfo(data.data || {});
   } catch (error) {
-    setTaskMessage(error.message || "Khong tai duoc thong tin debug");
+    setTaskMessage(error.message || "Không tải được thông tin debug");
   }
 }
 
@@ -347,7 +351,7 @@ async function triggerRollbackDemo() {
   const rollbackMessage = document.getElementById("rollbackMessage");
   if (rollbackMessage) {
     rollbackMessage.style.color = "#b91c1c";
-    rollbackMessage.innerText = "Dang goi endpoint gay loi co chu dich...";
+    rollbackMessage.innerText = "Đang gọi endpoint gây lỗi có chủ đích...";
   }
 
   try {
@@ -356,14 +360,14 @@ async function triggerRollbackDemo() {
   } catch (error) {
     if (rollbackMessage) {
       rollbackMessage.style.color = "#b91c1c";
-      rollbackMessage.innerText = error.message || "Da nhan duoc HTTP 500 nhu mong doi";
+      rollbackMessage.innerText = error.message || "Đã nhận được HTTP 500 như mong đợi";
     }
     return;
   }
 
   if (rollbackMessage) {
     rollbackMessage.style.color = "#15803d";
-    rollbackMessage.innerText = "Endpoint khong loi, hay kiem tra lai cau hinh demo.";
+    rollbackMessage.innerText = "Endpoint không lỗi, hãy kiểm tra lại cấu hình demo.";
   }
 }
 
@@ -373,7 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const welcomeText = document.getElementById("welcomeText");
   if (welcomeText) {
-    welcomeText.innerText = `Xin chao ${user.username} (${user.email})`;
+    welcomeText.innerText = `Xin chào ${user.username} (${user.email})`;
     welcomeText.addEventListener("click", handleSecretRevealClick);
   }
 

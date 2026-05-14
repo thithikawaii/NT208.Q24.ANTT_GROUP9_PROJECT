@@ -10,8 +10,8 @@
     <main class="page">
         <section class="hero">
             <div>
-                <p class="eyebrow">DevOps Staging Demo</p>
-                <h1>Dashboard quản lý task</h1>
+                <p class="eyebrow">Bước 2 · Dashboard demo</p>
+                <h1>Quản lý task và kiểm tra rollback</h1>
                 <p id="welcomeText" class="muted"></p>
             </div>
             <div class="hero-actions">
@@ -20,10 +20,31 @@
             </div>
         </section>
 
+        <section class="demo-flow" aria-label="Luồng demo">
+            <article class="flow-card">
+                <span>1</span>
+                <strong>Task CRUD</strong>
+                <p>Tạo dữ liệu thật trong MySQL.</p>
+            </article>
+            <article class="flow-card">
+                <span>2</span>
+                <strong>Runtime</strong>
+                <p>Kiểm tra cấu hình container.</p>
+            </article>
+            <article class="flow-card danger">
+                <span>3</span>
+                <strong>Rollback</strong>
+                <p>Kích hoạt endpoint lỗi HTTP 500.</p>
+            </article>
+        </section>
+
         <section class="grid">
             <div class="panel">
                 <div class="panel-head">
-                    <h2>Thông tin task</h2>
+                    <div>
+                        <p class="eyebrow">Task</p>
+                        <h2>Thông tin task</h2>
+                    </div>
                     <button class="ghost-button" type="button" onclick="resetTaskForm()">Làm mới</button>
                 </div>
 
@@ -52,7 +73,10 @@
 
             <div class="panel">
                 <div class="panel-head">
-                    <h2>Danh sách task</h2>
+                    <div>
+                        <p class="eyebrow">Danh sách</p>
+                        <h2>Task trong database</h2>
+                    </div>
                     <button class="ghost-button" type="button" onclick="loadTasks()">Tải lại</button>
                 </div>
                 <div id="taskList" class="task-list"></div>
@@ -62,7 +86,10 @@
         <section class="insight-grid">
             <div class="panel">
                 <div class="panel-head">
-                    <h2>Debug runtime</h2>
+                    <div>
+                        <p class="eyebrow">Bước 3 · Runtime</p>
+                        <h2>Debug cấu hình</h2>
+                    </div>
                     <button class="ghost-button" type="button" onclick="loadDebugInfo()">Tải thông tin</button>
                 </div>
                 <div id="debugInfo" class="debug-card">
@@ -72,12 +99,16 @@
 
             <div class="panel rollback-panel">
                 <div class="panel-head">
-                    <h2>Rollback trigger</h2>
+                    <div>
+                        <p class="eyebrow danger-text">Bước 4 · Rollback</p>
+                        <h2>Endpoint tạo lỗi</h2>
+                    </div>
                     <button id="secretTriggerButton" class="danger-button hidden-trigger" type="button" onclick="triggerRollbackDemo()">Kích hoạt lỗi</button>
                 </div>
                 <div class="status-card">
                     <p><strong>Endpoint:</strong> <code>tasks/api/trigger-failure.php</code></p>
                     <p><strong>Kết quả mong đợi:</strong> <code>HTTP 500</code></p>
+                    <p><strong>Mục đích:</strong> Dùng để demo smoke test fail và rollback image cũ.</p>
                     <p id="rollbackMessage" class="message"></p>
                 </div>
             </div>
