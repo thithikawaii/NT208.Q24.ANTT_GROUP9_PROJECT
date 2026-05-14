@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="auth-shell">
+        <a class="back-link" href="../index.html">Trang chủ</a>
+        <div class="box">
+            <p class="eyebrow">Bước 1 · Tạo tài khoản</p>
+            <h1>Đăng ký</h1>
+            <p class="subtitle">Tài khoản mới sẽ được lưu vào MySQL để demo luồng web và database.</p>
+
+            <input type="text" id="registerUsername" placeholder="Tên đăng nhập">
+            <input type="email" id="registerEmail" placeholder="Email">
+            <input type="password" id="registerPassword" placeholder="Mật khẩu">
+            <input type="password" id="registerConfirmPassword" placeholder="Nhập lại mật khẩu">
+
+            <button type="button" onclick="register()">Đăng ký</button>
+
+            <p id="registerMessage" class="message"></p>
+            <p class="hint">Mật khẩu cần có chữ hoa, chữ thường, số và ký tự đặc biệt.</p>
+            <div class="auth-links">
+                <a href="login.html">Đã có tài khoản? Đăng nhập</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

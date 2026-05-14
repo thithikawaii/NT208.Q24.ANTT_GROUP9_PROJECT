@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="auth-shell">
+        <a class="back-link" href="../index.html">Trang chủ</a>
+        <div class="box">
+            <p class="eyebrow">Bước 1 · Xác thực</p>
+            <h1>Đăng nhập</h1>
+            <p class="subtitle">Dùng tài khoản demo để vào dashboard, thao tác task và kiểm tra rollback.</p>
+
+            <input type="text" id="loginUsername" placeholder="Tên đăng nhập">
+            <input type="password" id="loginPassword" placeholder="Mật khẩu">
+            <button type="button" onclick="login()">Đăng nhập</button>
+
+            <p id="loginMessage" class="message"></p>
+            <div class="auth-links">
+                <a href="register.html">Chưa có tài khoản? Đăng ký</a>
+                <a href="../tasks/index.html">Mở dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
